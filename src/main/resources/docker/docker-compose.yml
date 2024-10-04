@@ -1,0 +1,42 @@
+version: '3.8'
+name: docker-finance-app
+services:
+  db:
+    image: postgres
+    ports:
+      - '5434:5432'
+    volumes:
+      - ./db/postgresql-persistence:/bitnami/postgresql
+    environment:
+      - POSTGRES_DB=finance_app_db
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=toor
+    networks:
+      backend:
+        aliases:
+          - "database"
+    container_name: financeApp--postgresql-db
+  pgadmin:
+    image: dpage/pgadmin4:8.0
+    ports:
+      - '8088:80'
+    environment:
+      PGADMIN_DEFAULT_EMAIL: emileastih1@gmail.com
+      PGADMIN_DEFAULT_PASSWORD: toor
+    volumes:
+      - ./db/pgadmin-data:/var/lib/pgadmin
+    networks:
+      backend:
+        aliases:
+          - "pgadmin"
+    container_name: financeApp-pgadmin
+volumes:
+  db:
+    driver:
+      local
+  pgadmin-data:
+    driver:
+      local
+networks:
+  backend:
+    driver: bridge
